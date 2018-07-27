@@ -50,10 +50,12 @@ if __name__ == "__main__":
             break
         #print(msg.name())
         if msg.name() == "NAV_POSLLH":
+            print("NAV_POSLLH")
             outstr = str(msg).split(",")[1:]
             outstr = "".join(outstr)
             print(outstr)
         if msg.name() == "NAV_STATUS":
+            print("NAV_STATUS")
             outstr = str(msg).split(",")[1:2]
             outstr = "".join(outstr)
             print(outstr)
