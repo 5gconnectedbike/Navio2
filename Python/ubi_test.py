@@ -49,6 +49,7 @@ def post_request(payload):
         return False
 
     print("[INFO] request made properly, your device is updated")
+
     return True
 
 
@@ -58,6 +59,7 @@ def main():
 
     print("[INFO] Attemping to send data")
     post_request(payload)
+    print(payload)
     print("[INFO] finished")
 
 
