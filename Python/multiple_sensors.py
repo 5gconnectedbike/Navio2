@@ -15,7 +15,7 @@ print("LED is Green")
 baro.initialize()
 
 time.sleep(1)
-int count = 0
+count = 0
 while(True):
     if (count%2==0):
         led.setColor('Yellow')
