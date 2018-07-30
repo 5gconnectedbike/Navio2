@@ -1,3 +1,5 @@
+import navio.util
+import navio.ublox
 import time
 import requests
 import math
@@ -5,6 +7,8 @@ import random
 
 TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
 DEVICE_LABEL = "RPi"  # Put your device label here 
+VARIABLE_LABEL_1 = "temperature"
+VARIABLE_LABEL_2 = "humidity"
 VARIABLE_LABEL_3 = "position"  # Put your second variable label here
 LATITUDE = 0
 LONGITUDE = 0
@@ -16,12 +20,12 @@ def update_gps(latitude, longitude, temperature, humidity):
     LONGITUDE = longitude
     TEMPERATURE = temperature
     HUMIDITY = humidity
-}
+
 
 def get_gps():
     return (LATITUDE, LONGITUDE, TEMPERATURE, HUMIDITY)
 
-def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
+def build_payload(variable_1, variable_2, variable_3):
     lat, lng, temp_value, humidity_value = get_gps()
     lat/= 10000000.0
     lng/= 10000000.0
@@ -108,26 +112,30 @@ if __name__ == '__main__':
 
     while (True):
         msg = ubl.receive_message()
+
         if msg is None:
             if opts.reopen:
                 ubl.close()
                 ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
                 continue
             print(empty)
+
             break
-        #print(msg.name())
+
         if msg.name() == "NAV_POSLLH":
             print("NAV_POSLLH")
             outstr = str(msg).split(",")[1:]
-            print(outstr)
+#            print(outstr)
             names = list()
             values = list()
-            for entry in data:
+            for entry in outstr:
                 new = entry.split('=')
                 names.append(new[0][1:])
                 values.append(new[1])
             GPSdict = dict(zip(names, values))
             print(GPSdict)
+	    main()
+	    time.sleep(1)
             # outstr = "".join(outstr)
             # print(outstr)
         if msg.name() == "NAV_STATUS":
@@ -135,6 +143,3 @@ if __name__ == '__main__':
             outstr = str(msg).split(",")[1:2]
             outstr = "".join(outstr)
             print(outstr)
-
-        main()
-        time.sleep(1)
