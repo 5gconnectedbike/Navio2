@@ -8,18 +8,18 @@ import random
 
 TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
 DEVICE_LABEL = "RPi"  # Put your device label here 
-VARIABLE_LABEL_1 = "temperature"
-VARIABLE_LABEL_2 = "pressure"
-VARIABLE_LABEL_3 = "position"  # Put your second variable label here
-LATITUDE = 0
-LONGITUDE = 0
+VARIABLE_LABEL_1 = "Temperature (Celcius)"
+VARIABLE_LABEL_2 = "Pressure (Millibar)"
+VARIABLE_LABEL_3 = "Position"  # Put your second variable label here
+LATITUDE = 434914510
+LONGITUDE = -737286340
 TEMPERATURE = 0
 PRESSURE = 0
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
-    LATITUDE = int(GPSdict['Latitude'])
-    LONGITUDE = int(GPSdict['Longitude'])
+    #LATITUDE = int(GPSdict['Latitude'])
+    #LONGITUDE = int(GPSdict['Longitude'])
 
 def update_baro(temperature, pressure):
     global TEMPERATURE, PRESSURE
