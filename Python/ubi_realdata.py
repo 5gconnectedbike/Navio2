@@ -11,8 +11,8 @@ DEVICE_LABEL = "RPi"  # Put your device label here
 VARIABLE_LABEL_1 = "Temperature (Celcius)"
 VARIABLE_LABEL_2 = "Pressure (Millibar)"
 VARIABLE_LABEL_3 = "Position"  # Put your second variable label here
-LATITUDE = 434914510
-LONGITUDE = -737286340
+LATITUDE = -737286340
+LONGITUDE = 434914510
 TEMPERATURE = 0
 PRESSURE = 0
 
