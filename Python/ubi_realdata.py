@@ -15,11 +15,11 @@ LONGITUDE = 0
 TEMPERATURE = 0
 HUMIDITY = 0
 
-def update_gps(latitude, longitude, temperature, humidity):
-    LATITUDE = latitude
-    LONGITUDE = longitude
-    TEMPERATURE = temperature
-    HUMIDITY = humidity
+def update_gps(GPSdict):
+    LATITUDE = GPSdict['Latitude']
+    LONGITUDE = GPSdict['Longitude']
+    TEMPERATURE = GPSdict['height']
+    HUMIDITY = GPSdict['hAcc']
 
 
 def get_gps():
@@ -134,8 +134,9 @@ if __name__ == '__main__':
                 values.append(new[1])
             GPSdict = dict(zip(names, values))
             print(GPSdict)
-	    main()
-	    time.sleep(1)
+            update_gps(GPSdict)
+            main()
+            time.sleep(1)
             # outstr = "".join(outstr)
             # print(outstr)
         if msg.name() == "NAV_STATUS":
