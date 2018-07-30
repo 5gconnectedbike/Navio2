@@ -17,10 +17,10 @@ HUMIDITY = 0
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE, TEMPERATURE, HUMIDITY
-    LATITUDE = GPSdict['Latitude']
-    LONGITUDE = GPSdict['Longitude']
-    TEMPERATURE = GPSdict['height']
-    HUMIDITY = GPSdict['hAcc']
+    LATITUDE = int(GPSdict['Latitude'])
+    LONGITUDE = int(GPSdict['Longitude'])
+    TEMPERATURE = int(GPSdict['height'])
+    HUMIDITY = int(GPSdict['hAcc'])
 
 
 def get_gps():
