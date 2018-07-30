@@ -30,7 +30,7 @@ def get_gps():
     return (LATITUDE, LONGITUDE, TEMPERATURE, PRESSURE)
 
 def build_payload(variable_1, variable_2, variable_3):
-    lat, lng, temp_value, perssure_value = get_gps()
+    lat, lng, temp_value, pressure_value = get_gps()
     lat/= 10000000.0
     lng/= 10000000.0
 
