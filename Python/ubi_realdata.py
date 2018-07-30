@@ -11,15 +11,15 @@ DEVICE_LABEL = "RPi"  # Put your device label here
 VARIABLE_LABEL_1 = "Temperature"
 VARIABLE_LABEL_2 = "Pressure"
 VARIABLE_LABEL_3 = "Position"  # Put your second variable label here
-LATITUDE = 454914510
-LONGITUDE = -737286340
+LATITUDE = 0
+LONGITUDE = 0
 TEMPERATURE = 0
 PRESSURE = 0
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
-    #LATITUDE = int(GPSdict['Latitude'])
-    #LONGITUDE = int(GPSdict['Longitude'])
+    LATITUDE = int(GPSdict['Latitude'])
+    LONGITUDE = int(GPSdict['Longitude'])
 
 def update_baro(temperature, pressure):
     global TEMPERATURE, PRESSURE
