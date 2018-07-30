@@ -16,6 +16,7 @@ TEMPERATURE = 0
 HUMIDITY = 0
 
 def update_gps(GPSdict):
+    global LATITUDE, LONGITUDE, TEMPERATURE, HUMIDITY
     LATITUDE = GPSdict['Latitude']
     LONGITUDE = GPSdict['Longitude']
     TEMPERATURE = GPSdict['height']
