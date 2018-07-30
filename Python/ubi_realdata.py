@@ -36,7 +36,7 @@ def build_payload(variable_1, variable_2, variable_3):
 
     payload = {variable_1: temp_value,
                variable_2: humidity_value,
-               variable_3: {"value": 1, "context": {"lat": lat, "lng": lng}}
+               variable_3: {"context": {"lat": lat, "lng": lng}}
                }
 
     return payload
@@ -132,7 +132,7 @@ if __name__ == '__main__':
         baro.calculatePressureAndTemperature()
         update_baro(baro.TEMP, baro.PRES)
 
-        print("Temperature(C): %.6f" % (baro.TEMP), "Pressure(millibar): %.6f" % (baro.PRES))
+        # print("Temperature(C): %.6f" % (baro.TEMP), "Pressure(millibar): %.6f" % (baro.PRES))
 
         msg = ubl.receive_message()
 
