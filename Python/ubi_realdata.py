@@ -120,8 +120,16 @@ if __name__ == '__main__':
             print("NAV_POSLLH")
             outstr = str(msg).split(",")[1:]
             print(outstr)
-            outstr = "".join(outstr)
-            print(outstr)
+            names = list()
+            values = list()
+            for entry in data:
+                new = entry.split('=')
+                names.append(new[0][1:])
+                values.append(new[1])
+            GPSdict = dict(zip(names, values))
+            print(GPSdict)
+            # outstr = "".join(outstr)
+            # print(outstr)
         if msg.name() == "NAV_STATUS":
             print("NAV_STATUS")
             outstr = str(msg).split(",")[1:2]
