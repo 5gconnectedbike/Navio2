@@ -8,8 +8,8 @@ import random
 
 TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
 DEVICE_LABEL = "RPi"  # Put your device label here 
-VARIABLE_LABEL_1 = "Temperature (Celcius)"
-VARIABLE_LABEL_2 = "Pressure (Millibar)"
+VARIABLE_LABEL_1 = "Temperature"
+VARIABLE_LABEL_2 = "Pressure"
 VARIABLE_LABEL_3 = "Position"  # Put your second variable label here
 LATITUDE = 454914510
 LONGITUDE = -737286340
