@@ -61,7 +61,8 @@ if __name__ == "__main__":
             print(outstr)
         if msg.name() == "NAV_VELNED":
             print("NAV_VELNED")
-            outstr = str(msg).split(",")[1:2]
-            outstr = "".join(outstr)
-            print(outstr)
+            print(str(msg))
+            # outstr = str(msg).split(",")[1:2]
+            # outstr = "".join(outstr)
+            # print(outstr)
         #print(str(msg))
