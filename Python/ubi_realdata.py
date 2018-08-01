@@ -173,13 +173,13 @@ if __name__ == '__main__':
         if msg.name() == "NAV_VELNED":
             print("NAV_VELNED")
             print(str(msg))
-            outstr = str(msg).split(" ")[1:]
-            outstr = "".join(outstr)
+            outstr = str(msg).split(",")[1:]
+            # outstr = "".join(outstr)
             names = list()
             values = list()
             for entry in outstr:
                 new = entry.split('=')
-                names.append(new[0])
+                names.append(new[0][1:])
                 values.append(new[1])
             speedDict = dict(zip(names, values))
             update_speed(speedDict)
