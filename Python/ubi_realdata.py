@@ -26,6 +26,9 @@ def update_baro(temperature, pressure):
     TEMPERATURE = temperature
     PRESSURE = pressure
 
+def update_speed(speedDict):
+    print(speedDict)
+
 def get_gps():
     return (LATITUDE, LONGITUDE, TEMPERATURE, PRESSURE)
 
@@ -166,3 +169,20 @@ if __name__ == '__main__':
             outstr = str(msg).split(",")[1:2]
             outstr = "".join(outstr)
             print(outstr)
+        if msg.name() == "NAV_VELNED":
+            print("NAV_VELNED")
+            print(str(msg))
+            outstr = str(msg).split(" ")[1:]
+            outstr = "".join(outstr)
+            names = list()
+            values = list()
+            for entry in outstr:
+                new = entry.split('=')
+                names.append(new[0])
+                values.append(new[1])
+            speedDict = dict(zip(names, values))
+            update_speed(speedDict)
+            # print(speedDict)
+
+        
+
