@@ -27,6 +27,7 @@ def update_baro(temperature, pressure):
     PRESSURE = pressure
 
 def update_speed(speedDict):
+    print('speed')
     print(speedDict)
 
 def get_gps():
