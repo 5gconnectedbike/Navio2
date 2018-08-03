@@ -103,6 +103,8 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2:
         print("Enter sensor name: mpu or lsm")
 
+    args = parser.parse_args()
+
     if args.i == 'mpu':
         print("Selected: MPU9250")
         imu = navio.mpu9250.MPU9250()
@@ -211,7 +213,7 @@ if __name__ == '__main__':
         if msg.name() == "NAV_VELNED":
             print("NAV_VELNED")
             print(str(msg))
-            outstr = str(msg).split(",")[1:]Nas
+            outstr = str(msg).split(",")[1:]
             # outstr = "".join(outstr)
             names = list()
             values = list()
