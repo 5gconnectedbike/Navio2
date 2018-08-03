@@ -184,6 +184,9 @@ if __name__ == '__main__':
 
         m9a, m9g, m9m = imu.getMotion9()
         update_accel(m9a, m9g, m9m)
+        print "Acc:", "{:+7.3f}".format(m9a[0]), "{:+7.3f}".format(m9a[1]), "{:+7.3f}".format(m9a[2]),
+        print " Gyr:", "{:+8.3f}".format(m9g[0]), "{:+8.3f}".format(m9g[1]), "{:+8.3f}".format(m9g[2]),
+	    print " Mag:", "{:+7.3f}".format(m9m[0]), "{:+7.3f}".format(m9m[1]), "{:+7.3f}".format(m9m[2])
 
         msg = ubl.receive_message()
 
@@ -210,7 +213,7 @@ if __name__ == '__main__':
             print(GPSdict)
             update_gps(GPSdict)
             # outstr = "".join(outstr)
-            # print(outstr)
+            print(outstr)
         if msg.name() == "NAV_STATUS":
             print("NAV_STATUS")
             outstr = str(msg).split(",")[1:2]
@@ -229,7 +232,7 @@ if __name__ == '__main__':
                 values.append(new[1])
             speedDict = dict(zip(names, values))
             update_speed(speedDict)
-            # print(speedDict)
+            print(speedDict)
         
         main()
         
