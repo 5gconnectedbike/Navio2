@@ -168,9 +168,13 @@ if __name__ == '__main__':
         update_baro(baro.TEMP, baro.PRES)
 
         m9a, m9g, m9m = imu.getMotion9()
+        
+        m9a = [round(element,3) for element in m9a]
+        m9g = [round(element,3) for element in m9a]
+        m9m = [round(element,3) for element in m9a]
 
         print('m9a[0]', m9a[0])
-        
+
         msg = ubl.receive_message()
 
         if msg is None:
