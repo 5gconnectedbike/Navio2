@@ -7,16 +7,32 @@ import math
 import random
 import argparse
 import sys
+import numpy as np
 
 TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
 DEVICE_LABEL = "RPi"  # Put your device label here 
 VARIABLE_LABEL_1 = "Temperature"
 VARIABLE_LABEL_2 = "Pressure"
-VARIABLE_LABEL_3 = "Position"  # Put your second variable label here
+VARIABLE_LABEL_3 = "Position"  
+VARIABLE_LABEL_4 = "Speed"
+
 LATITUDE = 0
 LONGITUDE = 0
 TEMPERATURE = 0
 PRESSURE = 0
+M9A = np.zeros(3)
+M9G = np.zeros(3)
+M9M = np.zeros(3)
+
+def update_accel(accList, gyrList, magList):
+    global M9A, M9G, M9M
+    accList = [round(element,3) for element in accList]
+    gyrList = [round(element,3) for element in gyrList]
+    magList = [round(element,3) for element in magList]
+
+    M9A = accList
+    M9G = gyrList
+    M9M = magList
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
@@ -47,7 +63,6 @@ def build_payload(variable_1, variable_2, variable_3):
 
     return payload
 
-
 def post_request(payload):
     # Creates the headers for the HTTP requests
     url = "http://things.ubidots.com"
@@ -73,7 +88,6 @@ def post_request(payload):
 
     return True
 
-
 def main():
     payload = build_payload(
         VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3)
@@ -85,7 +99,6 @@ def main():
 
 
 if __name__ == '__main__':
-
     navio.util.check_apm()
 
     # Barometer initialization
@@ -119,8 +132,6 @@ if __name__ == '__main__':
         print('NO CONNECTION to IMU')
     
 
-
-    
     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
 
     ubl.configure_poll_port()
@@ -158,6 +169,8 @@ if __name__ == '__main__':
     time.sleep(1)
 
     while (True):
+        time.sleep(1)
+
         baro.refreshPressure()
         time.sleep(0.01) # Waiting for pressure data ready 10ms
         baro.readPressure()
@@ -170,12 +183,7 @@ if __name__ == '__main__':
         update_baro(baro.TEMP, baro.PRES)
 
         m9a, m9g, m9m = imu.getMotion9()
-        
-        m9a = [round(element,3) for element in m9a]
-        m9g = [round(element,3) for element in m9a]
-        m9m = [round(element,3) for element in m9a]
-
-        print('m9a[0]', m9a[0])
+        update_accel(m9a, m9g, m9m)
 
         msg = ubl.receive_message()
 
@@ -201,8 +209,6 @@ if __name__ == '__main__':
             GPSdict = dict(zip(names, values))
             print(GPSdict)
             update_gps(GPSdict)
-            main()
-            time.sleep(1)
             # outstr = "".join(outstr)
             # print(outstr)
         if msg.name() == "NAV_STATUS":
@@ -224,6 +230,9 @@ if __name__ == '__main__':
             speedDict = dict(zip(names, values))
             update_speed(speedDict)
             # print(speedDict)
+        
+        main()
+        
 
         
 
