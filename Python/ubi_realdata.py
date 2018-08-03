@@ -5,6 +5,8 @@ import time
 import requests
 import math
 import random
+import argparse
+import sys
 
 TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
 DEVICE_LABEL = "RPi"  # Put your device label here 
@@ -86,9 +88,37 @@ if __name__ == '__main__':
 
     navio.util.check_apm()
 
+    # Barometer initialization
     baro = navio.ms5611.MS5611()
     baro.initialize()
 
+    # AccelGyroMag initialization
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", help = "Sensor selection: -i [sensor name].\
+                                    Sensors names: mpu or lsm.")
+    
+    if (len(sys.argv) == 1):
+        print("Using LSM9DS1 as default accelerometer")
+        parser.print_help()
+    elif len(sys.argv) == 2:
+        print("Enter sensor name: mpu or lsm")
+
+    if args.i == 'mpu':
+        print("Selected: MPU9250")
+        imu = navio.mpu9250.MPU9250()
+    else:
+        print("Selected: LSM9DS1")
+        imu = navio.lsm9ds1.LSM9DS1()
+    
+    if imu.testConnection():
+        print('Connection to IMU established')
+        imu.initialize()
+    else:
+        print('NO CONNECTION to IMU')
+    
+
+
+    
     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
 
     ubl.configure_poll_port()
@@ -123,6 +153,7 @@ if __name__ == '__main__':
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_TIMEGPS, 5)
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
     #ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_DGPS, 5)
+    time.sleep(1)
 
     while (True):
         baro.refreshPressure()
@@ -136,7 +167,10 @@ if __name__ == '__main__':
         baro.calculatePressureAndTemperature()
         update_baro(baro.TEMP, baro.PRES)
 
+        m9a, m9g, m9m = imu.getMotion9()
 
+        print('m9a[0]', m9a[0])
+        
         msg = ubl.receive_message()
 
         if msg is None:
@@ -173,7 +207,7 @@ if __name__ == '__main__':
         if msg.name() == "NAV_VELNED":
             print("NAV_VELNED")
             print(str(msg))
-            outstr = str(msg).split(",")[1:]
+            outstr = str(msg).split(",")[1:]Nas
             # outstr = "".join(outstr)
             names = list()
             values = list()
