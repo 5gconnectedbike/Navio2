@@ -51,6 +51,7 @@ def update_baro(temperature, pressure):
     TEMPERATURE = temperature
     PRESSURE = pressure
 
+# TODOOOOOOOOO
 def update_speed(speedDict):
     global GROUND_SPEED, HEADING
     GROUND_SPEED = int(speedDict['gSpeed'])
@@ -209,12 +210,12 @@ if __name__ == '__main__':
 
         m9a, m9g, m9m = imu.getMotion9()
         update_accel(m9a, m9g, m9m)
-        print("Acc:", "{:+7.3f}".format(m9a[0]), "{:+7.3f}".format(m9a[1]), "{:+7.3f}".format(m9a[2]))
-        print(" Gyr:", "{:+8.3f}".format(m9g[0]), "{:+8.3f}".format(m9g[1]), "{:+8.3f}".format(m9g[2]))
-        print(" Mag:", "{:+7.3f}".format(m9m[0]), "{:+7.3f}".format(m9m[1]), "{:+7.3f}".format(m9m[2]))
+        # print("Acc:", "{:+7.3f}".format(m9a[0]), "{:+7.3f}".format(m9a[1]), "{:+7.3f}".format(m9a[2]))
+        # print(" Gyr:", "{:+8.3f}".format(m9g[0]), "{:+8.3f}".format(m9g[1]), "{:+8.3f}".format(m9g[2]))
+        # print(" Mag:", "{:+7.3f}".format(m9m[0]), "{:+7.3f}".format(m9m[1]), "{:+7.3f}".format(m9m[2]))
 
         msg = ubl.receive_message()
-
+	print(msg.name())
         if msg is None:
             if opts.reopen:
                 ubl.close()

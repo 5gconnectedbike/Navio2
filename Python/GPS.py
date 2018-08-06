@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 continue
             print(empty)
             break
-        # print(msg.name())
+        print(msg.name())
         if msg.name() == "NAV_POSLLH":
             print("NAV_POSLLH")
             outstr = str(msg).split(",")[1:]
