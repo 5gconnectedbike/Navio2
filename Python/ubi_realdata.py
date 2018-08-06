@@ -15,11 +15,18 @@ VARIABLE_LABEL_1 = "Temperature"
 VARIABLE_LABEL_2 = "Pressure"
 VARIABLE_LABEL_3 = "Position"  
 VARIABLE_LABEL_4 = "Speed"
+VARIABLE_LABEL_5 = "Heading"
+VARIABLE_LABEL_6 = "Acceleration"
+VARIABLE_LABEL_7 = "Gyroscope"  
+VARIABLE_LABEL_8 = "Magnetometer"
 
 LATITUDE = 0
 LONGITUDE = 0
 TEMPERATURE = 0
 PRESSURE = 0
+GROUND_SPEED = 0
+HEADING = 0
+
 M9A = np.zeros(3)
 M9G = np.zeros(3)
 M9M = np.zeros(3)
@@ -36,8 +43,8 @@ def update_accel(accList, gyrList, magList):
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
-    LATITUDE = int(GPSdict['Latitude'])
-    LONGITUDE = int(GPSdict['Longitude'])
+    LATITUDE = int(GPSdict['Latitude'])/10000000.0
+    LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
 def update_baro(temperature, pressure):
     global TEMPERATURE, PRESSURE
@@ -45,20 +52,37 @@ def update_baro(temperature, pressure):
     PRESSURE = pressure
 
 def update_speed(speedDict):
-    print('speed')
-    print(speedDict)
+    global GROUND_SPEED, HEADING
+    GROUND_SPEED = int(speedDict['gSpeed'])
+    HEADING = int(speedDict['heading'])/100000.0
 
 def get_gps():
-    return (LATITUDE, LONGITUDE, TEMPERATURE, PRESSURE)
+    return (LATITUDE, LONGITUDE)
 
-def build_payload(variable_1, variable_2, variable_3):
-    lat, lng, temp_value, pressure_value = get_gps()
-    lat/= 10000000.0
-    lng/= 10000000.0
+def get_baro():
+    return (TEMPERATURE, PRESSURE)
+
+def get_speed():
+    return (GROUND_SPEED, HEADING)
+
+def get_accel():
+    return (M9A, M9G, M9M)
+
+
+def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
+    lat, lng = get_gps()
+    temp_value, pressure_value = get_baro()
+    speed, heading = get_speed()
+    m9a, m9g, m9m = get_accel()
 
     payload = {variable_1: temp_value,
                variable_2: pressure_value,
-               variable_3: {"value": 1, "context": {"lat": lat, "lng": lng}}
+               variable_3: {"value": 1, "context": {"lat": lat, "lng": lng}},
+               variable_4: speed,
+               variable_5: heading,
+               variable_6: {"value": 1, "context": {"xAcc": m9a[0], "yAcc": m9a[1], "zAcc":m9a[2]}},
+               variable_7: {"value": 1, "context": {"xGyr": m9g[0], "yGyr": m9g[1], "zGyr":m9g[2]}},
+               variable_8: {"value": 1, "context": {"xMag": m9m[0], "yMag": m9m[1], "zMag":m9m[2]}}
                }
 
     return payload
@@ -90,7 +114,8 @@ def post_request(payload):
 
 def main():
     payload = build_payload(
-        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3)
+        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
+        VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
 
     print("[INFO] Attemping to send data")
     post_request(payload)
@@ -169,7 +194,7 @@ if __name__ == '__main__':
     time.sleep(1)
 
     while (True):
-        time.sleep(1)
+        time.sleep(0.1)
 
         baro.refreshPressure()
         time.sleep(0.01) # Waiting for pressure data ready 10ms
