@@ -81,9 +81,9 @@ def build_payload(variable_1, variable_2, variable_3, variable_4, variable_5, va
                variable_3: {"value": 1, "context": {"lat": lat, "lng": lng}},
                variable_4: speed,
                variable_5: heading,
-               variable_6: {"value": 1, "context": {"xAcc": m9a[0], "yAcc": m9a[1], "zAcc":m9a[2]}},
-               variable_7: {"value": 1, "context": {"xGyr": m9g[0], "yGyr": m9g[1], "zGyr":m9g[2]}},
-               variable_8: {"value": 1, "context": {"xMag": m9m[0], "yMag": m9m[1], "zMag":m9m[2]}}
+               variable_6: {"value": 1, "context": {"x": m9a[0], "y": m9a[1], "z":m9a[2]}},
+               variable_7: {"value": 1, "context": {"x": m9g[0], "y": m9g[1], "z":m9g[2]}},
+               variable_8: {"value": 1, "context": {"x": m9m[0], "y": m9m[1], "z":m9m[2]}}
                }
 
     return payload
