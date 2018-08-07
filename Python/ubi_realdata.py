@@ -39,7 +39,6 @@ def update_accel(accList, gyrList, magList):
     M9A = accList
     M9G = gyrList
     M9M = magList
-
 #    print(' '.join(str(x) for x in M9A))
 #    print(' '.join(str(x) for x in M9G))
 #    print(' '.join(str(x) for x in M9M))
@@ -54,7 +53,6 @@ def update_baro(temperature, pressure):
     TEMPERATURE = temperature
     PRESSURE = pressure
 
-# TODOOOOOOOOO
 def update_speed(speedDict):
     global GROUND_SPEED, HEADING
     GROUND_SPEED = int(speedDict['gSpeed'])
@@ -130,9 +128,10 @@ def main():
 def gpsThread():
     ubl = GPSConfig()
 #    time.sleep(1)
-    msg = ubl.receive_message()
 
     while(True):
+        msg = ubl.receive_message()
+
         # print(msg.name())
         if msg is None:
             if opts.reopen:
@@ -201,8 +200,7 @@ def baroThread():
     baro = navio.ms5611.MS5611()
     baro.initialize()
     while(True):
-
-  #      time.sleep(1)
+        time.sleep(0.1)
 
         baro.refreshPressure()
         time.sleep(0.01) # Waiting for pressure data ready 10ms
@@ -270,12 +268,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
-    aThread = Process(target=accelThread(args.i))
+    aThread = Process(target=accelThread, args=(args.i, ))
         
-    gThread = Process(target=gpsThread(ubl))
-    bThread = Process(target=baroThread())
+    gThread = Process(target=gpsThread)
+    bThread = Process(target=baroThread
         # mainThread = Process(target=main())
-        
+    
     bThread.start()
     bThread.join()
     gThread.start()
@@ -283,13 +281,6 @@ if __name__ == '__main__':
     aThread.start()
     aThread.join()
 
-
-        # mainThread.start()
-
-#    aThread.join()
-#    gThread.join()
-#    bThread.join()
-        # mainThread.join()  
     main()      
 
         
