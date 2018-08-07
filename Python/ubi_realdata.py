@@ -271,7 +271,7 @@ if __name__ == '__main__':
     aThread = Process(target=accelThread, args=(args.i, ))
         
     gThread = Process(target=gpsThread)
-    bThread = Process(target=baroThread
+    bThread = Process(target=baroThread)
         # mainThread = Process(target=main())
     
     bThread.start()
