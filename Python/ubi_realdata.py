@@ -39,9 +39,9 @@ def update_accel(accList, gyrList, magList):
     M9A = accList
     M9G = gyrList
     M9M = magList
-#    print(' '.join(str(x) for x in M9A))
-#    print(' '.join(str(x) for x in M9G))
-#    print(' '.join(str(x) for x in M9M))
+    print(' '.join(str(x) for x in M9A))
+    print(' '.join(str(x) for x in M9G))
+    print(' '.join(str(x) for x in M9M))
 
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
