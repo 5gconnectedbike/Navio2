@@ -160,11 +160,11 @@ def gpsThread():
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
     #ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_DGPS, 5)
 
-    time.sleep(1)
     while(True):
+        time.sleep(1)
         msg = ubl.receive_message()
 
-        print(msg.name())
+        # print(msg.name())
         if msg is None:
             if opts.reopen:
                 ubl.close()
@@ -223,6 +223,7 @@ def accelThread(accelName):
         print('NO CONNECTION to IMU')
 
     while(True):
+        time.sleep(1)
         m9a, m9g, m9m = imu.getMotion9()
         update_accel(m9a, m9g, m9m)
     
@@ -231,10 +232,8 @@ def baroThread():
     baro = navio.ms5611.MS5611()
     baro.initialize()
 
-    time.sleep(1)
-
     while(True):
-        time.sleep(0.1)
+        time.sleep(1)
 
         baro.refreshPressure()
         time.sleep(0.01) # Waiting for pressure data ready 10ms
@@ -267,9 +266,9 @@ if __name__ == '__main__':
     else:
         aThread = Process(target=accelThread, args=('lsm'))
     
-    gThread = Process(target=gpsThread)
-    bThread = Process(target=baroThread)
-    mainThread = Process(target=main)
+    gThread = Process(target=gpsThread())
+    bThread = Process(target=baroThread())
+    mainThread = Process(target=main())
     
     aThread.start()
     gThread.start()
