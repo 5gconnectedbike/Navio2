@@ -116,19 +116,103 @@ def post_request(payload):
     return True
 
 def main():
-    while(True):
-        time.sleep(10)
+    time.sleep(1)
 
-        payload = build_payload(
-            VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
-            VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
+    payload = build_payload(
+        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
+        VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
 
-        print("[INFO] Attemping to send data")
-        post_request(payload)
-        print(payload)
-        print("[INFO] finished")
+    print("[INFO] Attemping to send data")
+    post_request(payload)
+    print(payload)
+    print("[INFO] finished")
 
-def gpsThread():
+def gpsThread(ubl):
+    time.sleep(1)
+    msg = ubl.receive_message()
+
+    # # print(msg.name())
+    # if msg is None:
+    #     if opts.reopen:
+    #         ubl.close()
+    #         ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
+    #         continue
+    #     print(empty)
+
+    #     break
+
+    if msg.name() == "NAV_POSLLH":
+        print("NAV_POSLLH")
+        outstr = str(msg).split(",")[1:]
+#            print(outstr)
+        names = list()
+        values = list()
+        for entry in outstr:
+            new = entry.split('=')
+            names.append(new[0][1:])
+            values.append(new[1])
+        GPSdict = dict(zip(names, values))
+        print(GPSdict)
+        update_gps(GPSdict)
+        # print(outstr)
+    if msg.name() == "NAV_STATUS":
+        print("NAV_STATUS")
+        outstr = str(msg).split(",")[1:2]
+        outstr = "".join(outstr)
+        print(outstr)
+    if msg.name() == "NAV_VELNED":
+        print("NAV_VELNED")
+        print(str(msg))
+        outstr = str(msg).split(",")[1:]
+        names = list()
+        values = list()
+        for entry in outstr:
+            new = entry.split('=')
+            names.append(new[0][1:])
+            values.append(new[1])
+        speedDict = dict(zip(names, values))
+        update_speed(speedDict)
+        print(speedDict)
+
+def accelThread(accelName):
+    # AccelGyroMag initialization
+    if accelName == 'mpu':
+        print("Selected: MPU9250")
+        imu = navio.mpu9250.MPU9250()
+    else:
+        print("Selected: LSM9DS1")
+        imu = navio.lsm9ds1.LSM9DS1()
+    
+    if imu.testConnection():
+        print('Connection to IMU established')
+        imu.initialize()
+    else:
+        print('NO CONNECTION to IMU')
+
+    time.sleep(1)
+    m9a, m9g, m9m = imu.getMotion9()
+    update_accel(m9a, m9g, m9m)
+    
+def baroThread():
+    # Barometer initialization
+    baro = navio.ms5611.MS5611()
+    baro.initialize()
+
+    time.sleep(1)
+
+    baro.refreshPressure()
+    time.sleep(0.01) # Waiting for pressure data ready 10ms
+    baro.readPressure()
+
+    baro.refreshTemperature()
+    time.sleep(0.01) # Waiting for temperature data ready 10ms
+    baro.readTemperature()
+
+    baro.calculatePressureAndTemperature()
+    update_baro(baro.TEMP, baro.PRES)
+    print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
+
+def GPSConfig():
     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
 
     ubl.configure_poll_port()
@@ -164,92 +248,7 @@ def gpsThread():
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
     #ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_DGPS, 5)
 
-    while(True):
-        time.sleep(1)
-        msg = ubl.receive_message()
-
-        # print(msg.name())
-        if msg is None:
-            if opts.reopen:
-                ubl.close()
-                ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
-                continue
-            print(empty)
-
-            break
-
-        if msg.name() == "NAV_POSLLH":
-            print("NAV_POSLLH")
-            outstr = str(msg).split(",")[1:]
-#            print(outstr)
-            names = list()
-            values = list()
-            for entry in outstr:
-                new = entry.split('=')
-                names.append(new[0][1:])
-                values.append(new[1])
-            GPSdict = dict(zip(names, values))
-            print(GPSdict)
-            update_gps(GPSdict)
-            # print(outstr)
-        if msg.name() == "NAV_STATUS":
-            print("NAV_STATUS")
-            outstr = str(msg).split(",")[1:2]
-            outstr = "".join(outstr)
-            print(outstr)
-        if msg.name() == "NAV_VELNED":
-            print("NAV_VELNED")
-            print(str(msg))
-            outstr = str(msg).split(",")[1:]
-            names = list()
-            values = list()
-            for entry in outstr:
-                new = entry.split('=')
-                names.append(new[0][1:])
-                values.append(new[1])
-            speedDict = dict(zip(names, values))
-            update_speed(speedDict)
-            print(speedDict)
-
-def accelThread(accelName):
-    # AccelGyroMag initialization
-    if accelName == 'mpu':
-        print("Selected: MPU9250")
-        imu = navio.mpu9250.MPU9250()
-    else:
-        print("Selected: LSM9DS1")
-        imu = navio.lsm9ds1.LSM9DS1()
-    
-    if imu.testConnection():
-        print('Connection to IMU established')
-        imu.initialize()
-    else:
-        print('NO CONNECTION to IMU')
-
-    while(True):
-        time.sleep(1)
-        m9a, m9g, m9m = imu.getMotion9()
-        update_accel(m9a, m9g, m9m)
-    
-def baroThread():
-    # Barometer initialization
-    baro = navio.ms5611.MS5611()
-    baro.initialize()
-
-    while(True):
-        time.sleep(1)
-
-        baro.refreshPressure()
-        time.sleep(0.01) # Waiting for pressure data ready 10ms
-        baro.readPressure()
-
-        baro.refreshTemperature()
-        time.sleep(0.01) # Waiting for temperature data ready 10ms
-        baro.readTemperature()
-
-        baro.calculatePressureAndTemperature()
-        update_baro(baro.TEMP, baro.PRES)
-        print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
+    return ubl
 
 if __name__ == '__main__':
     navio.util.check_apm()
@@ -266,24 +265,27 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.i == 'mpu':
-        aThread = Process(target=accelThread, args=('mpu'))
-    else:
-        aThread = Process(target=accelThread, args=('lsm'))
-    
-    gThread = Process(target=gpsThread())
-    bThread = Process(target=baroThread())
-    mainThread = Process(target=main())
-    
-    aThread.start()
-    gThread.start()
-    bThread.start()
-    mainThread.start()
+    while(True):
 
-    aThread.join()
-    gThread.join()
-    bThread.join()
-    mainThread.join()        
+        if args.i == 'mpu':
+            aThread = Process(target=accelThread, args=('mpu'))
+        else:
+            aThread = Process(target=accelThread, args=('lsm'))
+        
+        gThread = Process(target=gpsThread, args=(GPSConfig()))
+        bThread = Process(target=baroThread())
+        # mainThread = Process(target=main())
+        
+        aThread.start()
+        gThread.start()
+        bThread.start()
+        # mainThread.start()
+
+        aThread.join()
+        gThread.join()
+        bThread.join()
+        # mainThread.join()  
+        main()      
 
         
 
