@@ -114,16 +114,17 @@ def post_request(payload):
     return True
 
 def main():
-    time.sleep(1)
+    while True:
+        time.sleep(3)
 
-    payload = build_payload(
-        VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
-        VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
+        payload = build_payload(
+            VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
+            VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
 
-    print("[INFO] Attemping to send data")
-    post_request(payload)
-    print(payload)
-    print("[INFO] finished")
+        print("[INFO] Attemping to send data")
+        post_request(payload)
+        print(payload)
+        print("[INFO] finished")
 
 def gpsThread():
     ubl = GPSConfig()
@@ -271,16 +272,19 @@ if __name__ == '__main__':
         
     gThread = Process(target=gpsThread)
     bThread = Process(target=baroThread)
-        # mainThread = Process(target=main())
+    mainThread = Process(target=main)
     
     bThread.start()
     gThread.start()
     aThread.start()
+    mainThread.start()
+
     aThread.join()
     bThread.join()
     gThread.join()
+    mainThread.join()
 
-    main()      
+    # main()      
 
         
 
