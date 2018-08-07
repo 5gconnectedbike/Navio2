@@ -267,7 +267,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-
     aThread = Process(target=accelThread, args=(args.i, ))
         
     gThread = Process(target=gpsThread)
@@ -275,11 +274,11 @@ if __name__ == '__main__':
         # mainThread = Process(target=main())
     
     bThread.start()
-    bThread.join()
     gThread.start()
-    gThread.join()
     aThread.start()
     aThread.join()
+    bThread.join()
+    gThread.join()
 
     main()      
 
