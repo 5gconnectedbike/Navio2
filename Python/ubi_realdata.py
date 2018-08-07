@@ -127,52 +127,54 @@ def main():
     print(payload)
     print("[INFO] finished")
 
-def gpsThread(ubl):
+def gpsThread():
+    ubl = GPSConfig()
     time.sleep(1)
     msg = ubl.receive_message()
 
-    # # print(msg.name())
-    # if msg is None:
-    #     if opts.reopen:
-    #         ubl.close()
-    #         ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
-    #         continue
-    #     print(empty)
+    while(True):
+        # print(msg.name())
+        if msg is None:
+            if opts.reopen:
+                ubl.close()
+                ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
+                continue
+            print(empty)
 
-    #     break
+            break
 
-    if msg.name() == "NAV_POSLLH":
-        print("NAV_POSLLH")
-        outstr = str(msg).split(",")[1:]
-#            print(outstr)
-        names = list()
-        values = list()
-        for entry in outstr:
-            new = entry.split('=')
-            names.append(new[0][1:])
-            values.append(new[1])
-        GPSdict = dict(zip(names, values))
-        print(GPSdict)
-        update_gps(GPSdict)
-        # print(outstr)
-    if msg.name() == "NAV_STATUS":
-        print("NAV_STATUS")
-        outstr = str(msg).split(",")[1:2]
-        outstr = "".join(outstr)
-        print(outstr)
-    if msg.name() == "NAV_VELNED":
-        print("NAV_VELNED")
-        print(str(msg))
-        outstr = str(msg).split(",")[1:]
-        names = list()
-        values = list()
-        for entry in outstr:
-            new = entry.split('=')
-            names.append(new[0][1:])
-            values.append(new[1])
-        speedDict = dict(zip(names, values))
-        update_speed(speedDict)
-        print(speedDict)
+        if msg.name() == "NAV_POSLLH":
+            print("NAV_POSLLH")
+            outstr = str(msg).split(",")[1:]
+    #            print(outstr)
+            names = list()
+            values = list()
+            for entry in outstr:
+                new = entry.split('=')
+                names.append(new[0][1:])
+                values.append(new[1])
+            GPSdict = dict(zip(names, values))
+            print(GPSdict)
+            update_gps(GPSdict)
+            # print(outstr)
+        if msg.name() == "NAV_STATUS":
+            print("NAV_STATUS")
+            outstr = str(msg).split(",")[1:2]
+            outstr = "".join(outstr)
+            print(outstr)
+        if msg.name() == "NAV_VELNED":
+            print("NAV_VELNED")
+            print(str(msg))
+            outstr = str(msg).split(",")[1:]
+            names = list()
+            values = list()
+            for entry in outstr:
+                new = entry.split('=')
+                names.append(new[0][1:])
+                values.append(new[1])
+            speedDict = dict(zip(names, values))
+            update_speed(speedDict)
+            print(speedDict)
 
 def accelThread(accelName):
     # AccelGyroMag initialization
@@ -190,27 +192,30 @@ def accelThread(accelName):
         print('NO CONNECTION to IMU')
 
     time.sleep(1)
-    m9a, m9g, m9m = imu.getMotion9()
-    update_accel(m9a, m9g, m9m)
+    while(True):
+        
+        m9a, m9g, m9m = imu.getMotion9()
+        update_accel(m9a, m9g, m9m)
     
 def baroThread():
     # Barometer initialization
     baro = navio.ms5611.MS5611()
     baro.initialize()
+    while(True):
 
-    time.sleep(1)
+        time.sleep(1)
 
-    baro.refreshPressure()
-    time.sleep(0.01) # Waiting for pressure data ready 10ms
-    baro.readPressure()
+        baro.refreshPressure()
+        time.sleep(0.01) # Waiting for pressure data ready 10ms
+        baro.readPressure()
 
-    baro.refreshTemperature()
-    time.sleep(0.01) # Waiting for temperature data ready 10ms
-    baro.readTemperature()
+        baro.refreshTemperature()
+        time.sleep(0.01) # Waiting for temperature data ready 10ms
+        baro.readTemperature()
 
-    baro.calculatePressureAndTemperature()
-    update_baro(baro.TEMP, baro.PRES)
-    print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
+        baro.calculatePressureAndTemperature()
+        update_baro(baro.TEMP, baro.PRES)
+        print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
 
 def GPSConfig():
     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
@@ -232,20 +237,20 @@ def GPSConfig():
     ubl.set_preferred_usePPP(None)
 
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_POSLLH, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_PVT, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_PVT, 1)
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_STATUS, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_SOL, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_SOL, 1)
     ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_VELNED, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_SVINFO, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_VELECEF, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_POSECEF, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_RAW, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_SFRB, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_SVSI, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_ALM, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_EPH, 1)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_TIMEGPS, 5)
-    # ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_SVINFO, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_VELECEF, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_POSECEF, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_RAW, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_SFRB, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_SVSI, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_ALM, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_RXM, navio.ublox.MSG_RXM_EPH, 1)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_TIMEGPS, 5)
+    ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
     #ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_DGPS, 5)
 
     return ubl
