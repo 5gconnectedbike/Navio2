@@ -40,6 +40,10 @@ def update_accel(accList, gyrList, magList):
     M9G = gyrList
     M9M = magList
 
+    print(' '.join(str(x) for x in M9A))
+    print(' '.join(str(x) for x in M9G))
+    print(' '.join(str(x) for x in M9M))
+
 def update_gps(GPSdict):
     global LATITUDE, LONGITUDE
     LATITUDE = int(GPSdict['Latitude'])/10000000.0
@@ -187,7 +191,7 @@ def gpsThread():
             GPSdict = dict(zip(names, values))
             print(GPSdict)
             update_gps(GPSdict)
-            print(outstr)
+            # print(outstr)
         if msg.name() == "NAV_STATUS":
             print("NAV_STATUS")
             outstr = str(msg).split(",")[1:2]
@@ -245,6 +249,7 @@ def baroThread():
 
         baro.calculatePressureAndTemperature()
         update_baro(baro.TEMP, baro.PRES)
+        print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
 
 if __name__ == '__main__':
     navio.util.check_apm()
