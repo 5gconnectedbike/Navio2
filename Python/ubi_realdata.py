@@ -195,6 +195,7 @@ def accelThread(accelName):
     while(True):        
         m9a, m9g, m9m = imu.getMotion9()
         update_accel(m9a, m9g, m9m)
+        time.sleep(1)
     
 def baroThread():
     # Barometer initialization
@@ -214,6 +215,7 @@ def baroThread():
         baro.calculatePressureAndTemperature()
         update_baro(baro.TEMP, baro.PRES)
         print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
+        time.sleep(1)
 
 def GPSConfig():
     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
