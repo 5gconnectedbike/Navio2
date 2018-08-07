@@ -131,7 +131,7 @@ def gpsThread(ubl):
     time.sleep(1)
     msg = ubl.receive_message()
 
-    # # print(msg.name())
+    print(msg.name())
     # if msg is None:
     #     if opts.reopen:
     #         ubl.close()
@@ -265,14 +265,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    ubl = GPSConfig()
     while(True):
 
-        if args.i == 'mpu':
-            aThread = Process(target=accelThread, args=('mpu'))
-        else:
-            aThread = Process(target=accelThread, args=('lsm'))
+
+        aThread = Process(target=accelThread(args.i))
         
-        gThread = Process(target=gpsThread, args=(GPSConfig()))
+        gThread = Process(target=gpsThread(ubl))
         bThread = Process(target=baroThread())
         # mainThread = Process(target=main())
         
