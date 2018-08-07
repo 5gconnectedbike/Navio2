@@ -1,4 +1,4 @@
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 import navio.util
 import navio.ublox
 import navio.ms5611
@@ -126,7 +126,7 @@ def main():
         print(payload)
         print("[INFO] finished")
 
-def gpsThread():
+def gpsThread(gQ, sQ):
     ubl = GPSConfig()
 #    time.sleep(1)
 
@@ -156,6 +156,8 @@ def gpsThread():
             GPSdict = dict(zip(names, values))
             print(GPSdict)
             update_gps(GPSdict)
+            gQ = dequeue(values)
+
             # print(outstr)
         if msg.name() == "NAV_STATUS":
             print("NAV_STATUS")
@@ -176,7 +178,7 @@ def gpsThread():
             update_speed(speedDict)
             print(speedDict)
 
-def accelThread(accelName):
+def accelThread(accelName, q):
     # AccelGyroMag initialization
     if accelName == 'mpu':
         print("Selected: MPU9250")
@@ -270,11 +272,16 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    aThread = Process(target=accelThread, args=(args.i, ))
+    aQueue = Queue()
+    bQueue = Queue()
+    gQueue = Queue()
+    sQueue = Queue()
+
+    aThread = Process(target=accelThread, args=(args.i, aQueue))
         
-    gThread = Process(target=gpsThread)
-    bThread = Process(target=baroThread)
-    mainThread = Process(target=main)
+    gThread = Process(target=gpsThread, args=(gQueue, sQueue,  ))
+    bThread = Process(target=baroThread, args=(bQueue, ))
+    mainThread = Process(target=main, args=(aQueue, bQueue, gQueue, sQueue))
     
     bThread.start()
     gThread.start()
