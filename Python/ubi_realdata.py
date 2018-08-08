@@ -11,26 +11,46 @@ import sys
 import numpy as np
 
 class Ubidots:
+    TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
+    DEVICE_LABEL = "RPi"  # Put your device label here 
+    VARIABLE_LABEL_1 = "Temperature"
+    VARIABLE_LABEL_2 = "Pressure"
+    VARIABLE_LABEL_3 = "Position"  
+    VARIABLE_LABEL_4 = "Speed"
+    VARIABLE_LABEL_5 = "Heading"
+    VARIABLE_LABEL_6 = "Acceleration"
+    VARIABLE_LABEL_7 = "Gyroscope"  
+    VARIABLE_LABEL_8 = "Magnetometer"
+    LATITUDE = 0
+    LONGITUDE = 0
+    TEMPERATURE = 0
+    PRESSURE = 0
+    GROUND_SPEED = 0
+    HEADING = 0
+    M9A = np.zeros(3)
+    M9G = np.zeros(3)
+    M9M = np.zeros(3)
+    
     def __init__(self):
-        self.TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
-        self.DEVICE_LABEL = "RPi"  # Put your device label here 
-        self.VARIABLE_LABEL_1 = "Temperature"
-        self.VARIABLE_LABEL_2 = "Pressure"
-        self.VARIABLE_LABEL_3 = "Position"  
-        self.VARIABLE_LABEL_4 = "Speed"
-        self.VARIABLE_LABEL_5 = "Heading"
-        self.VARIABLE_LABEL_6 = "Acceleration"
-        self.VARIABLE_LABEL_7 = "Gyroscope"  
-        self.VARIABLE_LABEL_8 = "Magnetometer"
-        self.LATITUDE = 0
-        self.LONGITUDE = 0
-        self.TEMPERATURE = 0
-        self.PRESSURE = 0
-        self.GROUND_SPEED = 0
-        self.HEADING = 0
-        self.M9A = np.zeros(3)
-        self.M9G = np.zeros(3)
-        self.M9M = np.zeros(3)
+        # self.TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
+        # self.DEVICE_LABEL = "RPi"  # Put your device label here 
+        # self.VARIABLE_LABEL_1 = "Temperature"
+        # self.VARIABLE_LABEL_2 = "Pressure"
+        # self.VARIABLE_LABEL_3 = "Position"  
+        # self.VARIABLE_LABEL_4 = "Speed"
+        # self.VARIABLE_LABEL_5 = "Heading"
+        # self.VARIABLE_LABEL_6 = "Acceleration"
+        # self.VARIABLE_LABEL_7 = "Gyroscope"  
+        # self.VARIABLE_LABEL_8 = "Magnetometer"
+        # self.LATITUDE = 0
+        # self.LONGITUDE = 0
+        # self.TEMPERATURE = 0
+        # self.PRESSURE = 0
+        # self.GROUND_SPEED = 0
+        # self.HEADING = 0
+        # self.M9A = np.zeros(3)
+        # self.M9G = np.zeros(3)
+        # self.M9M = np.zeros(3)
 
     def update_accel(self, accList, gyrList, magList):
         # global M9A, M9G, M9M
@@ -38,39 +58,39 @@ class Ubidots:
         gyrList = [round(element,3) for element in gyrList]
         magList = [round(element,3) for element in magList]
 
-        self.M9A = accList
-        self.M9G = gyrList
-        self.M9M = magList
+        M9A = accList
+        M9G = gyrList
+        M9M = magList
 #        print(' '.join(str(x) for x in M9A))
 #        print(' '.join(str(x) for x in M9G))
-        print(' '.join(str(x) for x in self.M9M))
+        print(' '.join(str(x) for x in M9M))
 
     def update_gps(self, GPSdict):
         # global LATITUDE, LONGITUDE
-        self.LATITUDE = int(GPSdict['Latitude'])/10000000.0
-        self.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
+        LATITUDE = int(GPSdict['Latitude'])/10000000.0
+        LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
     def update_baro(self, temperature, pressure):
         # global TEMPERATURE, PRESSURE
-        self.TEMPERATURE = temperature
-        self.PRESSURE = pressure
+        TEMPERATURE = temperature
+        PRESSURE = pressure
 
     def update_speed(self, speedDict):
         # global GROUND_SPEED, HEADING
-        self.GROUND_SPEED = int(speedDict['gSpeed'])
-        self.HEADING = int(speedDict['heading'])/100000.0
+        GROUND_SPEED = int(speedDict['gSpeed'])
+        HEADING = int(speedDict['heading'])/100000.0
 
     def get_gps(self):
-        return (self.LATITUDE, self.LONGITUDE)
+        return (LATITUDE, LONGITUDE)
 
     def get_baro(self):
-        return (self.TEMPERATURE, self.PRESSURE)
+        return (TEMPERATURE, PRESSURE)
 
     def get_speed(self):
-        return (self.GROUND_SPEED, self.HEADING)
+        return (GROUND_SPEED, HEADING)
 
     def get_accel(self):
-        return (self.M9A, self.M9G, self.M9M)
+        return (M9A, M9G, M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
@@ -93,8 +113,8 @@ class Ubidots:
     def post_request(self, payload):
         # Creates the headers for the HTTP requests
         url = "http://things.ubidots.com"
-        url = "{}/api/v1.6/devices/{}".format(url, self.DEVICE_LABEL)
-        headers = {"X-Auth-Token": self.TOKEN, "Content-Type": "application/json"}
+        url = "{}/api/v1.6/devices/{}".format(url, DEVICE_LABEL)
+        headers = {"X-Auth-Token": TOKEN, "Content-Type": "application/json"}
 
         # Makes the HTTP requests
         status = 400
@@ -120,8 +140,8 @@ class Ubidots:
             time.sleep(3)
 
             payload = self.build_payload(
-                self.VARIABLE_LABEL_1, self.VARIABLE_LABEL_2, self.VARIABLE_LABEL_3, self.VARIABLE_LABEL_4,
-                self.VARIABLE_LABEL_5, self.VARIABLE_LABEL_6, self.VARIABLE_LABEL_7, self.VARIABLE_LABEL_8)
+                VARIABLE_LABEL_1, VARIABLE_LABEL_2, VARIABLE_LABEL_3, VARIABLE_LABEL_4,
+                VARIABLE_LABEL_5, VARIABLE_LABEL_6, VARIABLE_LABEL_7, VARIABLE_LABEL_8)
 
             print("[INFO] Attemping to send data")
             self.post_request(payload)
