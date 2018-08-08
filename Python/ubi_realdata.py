@@ -65,7 +65,7 @@ class Ubidots:
         cls.M9M = magList
 #        print(' '.join(str(x) for x in M9A))
 #        print(' '.join(str(x) for x in M9G))
-        print(' '.join(str(x) for x in self.M9M))
+        print(' '.join(str(x) for x in cls.M9M))
 
     @classmethod
     def update_gps(cls, GPSdict):
@@ -86,16 +86,16 @@ class Ubidots:
         cls.HEADING = int(speedDict['heading'])/100000.0
 
     def get_gps(self):
-        return (self.LATITUDE, self.LONGITUDE)
+        return (Ubidots.LATITUDE, Ubidots.LONGITUDE)
 
     def get_baro(self):
-        return (self.TEMPERATURE, self.PRESSURE)
+        return (Ubidots.TEMPERATURE, Ubidots.PRESSURE)
 
     def get_speed(self):
-        return (self.GROUND_SPEED, self.HEADING)
+        return (Ubidots.GROUND_SPEED, Ubidots.HEADING)
 
     def get_accel(self):
-        return (self.M9A, self.M9G, self.M9M)
+        return (Ubidots.M9A, Ubidots.M9G, Ubidots.M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
