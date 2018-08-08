@@ -54,7 +54,7 @@ class Ubidots:
         # self.M9M = np.zeros(3)
 
     def update_accel(self, accList, gyrList, magList):
-        # global M9A, M9G, M9M
+        global M9A, M9G, M9M
         accList = [round(element,3) for element in accList]
         gyrList = [round(element,3) for element in gyrList]
         magList = [round(element,3) for element in magList]
@@ -67,17 +67,17 @@ class Ubidots:
         print(' '.join(str(x) for x in M9M))
 
     def update_gps(self, GPSdict):
-        # global LATITUDE, LONGITUDE
+        global LATITUDE, LONGITUDE
         LATITUDE = int(GPSdict['Latitude'])/10000000.0
         LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
     def update_baro(self, temperature, pressure):
-        # global TEMPERATURE, PRESSURE
+        global TEMPERATURE, PRESSURE
         TEMPERATURE = temperature
         PRESSURE = pressure
 
     def update_speed(self, speedDict):
-        # global GROUND_SPEED, HEADING
+        global GROUND_SPEED, HEADING
         GROUND_SPEED = int(speedDict['gSpeed'])
         HEADING = int(speedDict['heading'])/100000.0
 
@@ -137,6 +137,7 @@ class Ubidots:
         return True
 
     def main(self):
+	global VARIABLE_LABEL1
         while True:
             time.sleep(3)
 
