@@ -53,33 +53,37 @@ class Ubidots:
         # self.M9G = np.zeros(3)
         # self.M9M = np.zeros(3)
 
-    def update_accel(self, accList, gyrList, magList):
+    @classmethod
+    def update_accel(cls, accList, gyrList, magList):
         # global M9A, M9G, M9M
         accList = [round(element,3) for element in accList]
         gyrList = [round(element,3) for element in gyrList]
         magList = [round(element,3) for element in magList]
 
-        self.M9A = accList
-        self.M9G = gyrList
-        self.M9M = magList
+        cls.M9A = accList
+        cls.M9G = gyrList
+        cls.M9M = magList
 #        print(' '.join(str(x) for x in M9A))
 #        print(' '.join(str(x) for x in M9G))
         print(' '.join(str(x) for x in self.M9M))
 
-    def update_gps(self, GPSdict):
+    @classmethod
+    def update_gps(cls, GPSdict):
         # global LATITUDE, LONGITUDE
-        self.LATITUDE = int(GPSdict['Latitude'])/10000000.0
-        self.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
+        cls.LATITUDE = int(GPSdict['Latitude'])/10000000.0
+        cls.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
-    def update_baro(self, temperature, pressure):
+    @classmethod
+    def update_baro(cls, temperature, pressure):
         # global TEMPERATURE, PRESSURE
-        self.TEMPERATURE = temperature
-        self.PRESSURE = pressure
+        cls.TEMPERATURE = temperature
+        cls.PRESSURE = pressure
 
-    def update_speed(self, speedDict):
+    @classmethod
+    def update_speed(cls, speedDict):
         # global GROUND_SPEED, HEADING
-        self.GROUND_SPEED = int(speedDict['gSpeed'])
-        self.HEADING = int(speedDict['heading'])/100000.0
+        cls.GROUND_SPEED = int(speedDict['gSpeed'])
+        cls.HEADING = int(speedDict['heading'])/100000.0
 
     def get_gps(self):
         return (self.LATITUDE, self.LONGITUDE)
