@@ -41,9 +41,9 @@ class Ubidots:
         self.M9A = accList
         self.M9G = gyrList
         self.M9M = magList
-        print(' '.join(str(x) for x in M9A))
-        print(' '.join(str(x) for x in M9G))
-        print(' '.join(str(x) for x in M9M))
+#        print(' '.join(str(x) for x in M9A))
+#        print(' '.join(str(x) for x in M9G))
+        print(' '.join(str(x) for x in self.M9M))
 
     def update_gps(self, GPSdict):
         # global LATITUDE, LONGITUDE
@@ -121,7 +121,7 @@ class Ubidots:
 
             payload = self.build_payload(
                 self.VARIABLE_LABEL_1, self.VARIABLE_LABEL_2, self.VARIABLE_LABEL_3, self.VARIABLE_LABEL_4,
-                self.VARIABLE_LABEL_5, self.VARIABLE_LABEL_6, self.VARIABLE_LABEL_7, self.ARIABLE_LABEL_8)
+                self.VARIABLE_LABEL_5, self.VARIABLE_LABEL_6, self.VARIABLE_LABEL_7, self.VARIABLE_LABEL_8)
 
             print("[INFO] Attemping to send data")
             self.post_request(payload)
@@ -281,11 +281,11 @@ class Ubidots:
         gQueue = Queue()
         sQueue = Queue()
 
-        aThread = Process(target=accelThread, args=(args.i, ))
+        aThread = Process(target=self.accelThread, args=(args.i, ))
             
-        gThread = Process(target=gpsThread)
-        bThread = Process(target=baroThread)
-        mainThread = Process(target=main)
+        gThread = Process(target=self.gpsThread)
+        bThread = Process(target=self.baroThread)
+        mainThread = Process(target=self.main)
         
         bThread.start()
         gThread.start()
@@ -300,6 +300,6 @@ class Ubidots:
         # main()      
 
 if __name__ =='__main__':
-    Ubidots.main2()
+    Ubidots().main2()
             
 
