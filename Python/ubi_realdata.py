@@ -32,6 +32,7 @@ class Ubidots:
     M9M = np.zeros(3)
     
     def __init__(self):
+        self.val = 0
         # self.TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
         # self.DEVICE_LABEL = "RPi"  # Put your device label here 
         # self.VARIABLE_LABEL_1 = "Temperature"
