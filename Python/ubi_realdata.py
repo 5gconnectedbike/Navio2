@@ -269,8 +269,9 @@ class Ubidots:
             m9a, m9g, m9m = imu.getMotion9()
             self.update_accel(m9a, m9g, m9m)
             time.sleep(1)
-        
-    def baroThread(self):
+    
+    @classmethod
+    def baroThread(cls):
         # Barometer initialization
         baro = navio.ms5611.MS5611()
         baro.initialize()
@@ -286,7 +287,7 @@ class Ubidots:
             baro.readTemperature()
 
             baro.calculatePressureAndTemperature()
-            Ubidots.update_baro(baro.TEMP, baro.PRES)
+            cls.update_baro(baro.TEMP, baro.PRES)
             # print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
             time.sleep(1)
 
