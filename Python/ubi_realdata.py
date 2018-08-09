@@ -136,6 +136,7 @@ class Ubidots:
         temp_value, pressure_value = self.get_baro()
         speed, heading = self.get_speed()
         m9a, m9g, m9m = self.get_accel()
+        print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
 
         payload = {variable_1: temp_value,
                 variable_2: pressure_value,
