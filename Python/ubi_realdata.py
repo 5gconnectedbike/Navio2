@@ -54,7 +54,7 @@ class Ubidots:
 
         aThread = Process(target=self.accelThread, args=(args.i, aQueue, ))
             
-        gThread = Process(target=self.gpsThread, gQueue, sQueue, )
+        gThread = Process(target=self.gpsThread, args=(gQueue, sQueue, ))
         bThread = Process(target=self.baroThread, args=(bQueue,))
         mainThread = Process(target=self.main, args=(bQueue, aQueue, gQueue, sQueue))
         
