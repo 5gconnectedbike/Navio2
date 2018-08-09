@@ -97,6 +97,8 @@ class Ubidots:
         cls.M9A = accList
         cls.M9G = gyrList
         cls.M9M = magList
+        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(cls.M9M[0],cls.M9M[1],cls.M9M[2]))
+
 #        print(' '.join(str(x) for x in M9A))
 #        print(' '.join(str(x) for x in M9G))
         # print(' '.join(str(x) for x in cls.M9M))
@@ -112,6 +114,7 @@ class Ubidots:
         # global TEMPERATURE, PRESSURE
         cls.TEMPERATURE = temperature
         cls.PRESSURE = pressure
+        print('TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
 
     @classmethod
     def update_speed(cls, speedDict):
@@ -126,7 +129,6 @@ class Ubidots:
 
     @classmethod
     def get_baro(cls):
-        print('TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
         return (cls.TEMPERATURE, cls.PRESSURE)
 
     @classmethod
@@ -135,7 +137,6 @@ class Ubidots:
 
     @classmethod
     def get_accel(cls):
-        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(cls.M9M[0],cls.M9M[1],cls.M9M[2]))
         return (cls.M9A, cls.M9G, cls.M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
