@@ -114,7 +114,7 @@ class Ubidots:
         # global TEMPERATURE, PRESSURE
         cls.TEMPERATURE = temperature
         cls.PRESSURE = pressure
-        print('TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
+        print('UPDATE:  TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
 
     @classmethod
     def update_speed(cls, speedDict):
@@ -129,6 +129,7 @@ class Ubidots:
 
     @classmethod
     def get_baro(cls):
+        print('GET: TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
         return (cls.TEMPERATURE, cls.PRESSURE)
 
     @classmethod
