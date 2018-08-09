@@ -292,7 +292,7 @@ class Ubidots:
             bQ.put((baro.TEMP, baro.PRES))
             cls.update_baro(baro.TEMP, baro.PRES)
             # print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
-            time.sleep(2)
+            time.sleep(5)
 
     def GPSConfig(self):
         ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
