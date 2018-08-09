@@ -99,7 +99,7 @@ class Ubidots:
         cls.M9M = magList
 #        print(' '.join(str(x) for x in M9A))
 #        print(' '.join(str(x) for x in M9G))
-        print(' '.join(str(x) for x in cls.M9M))
+        # print(' '.join(str(x) for x in cls.M9M))
 
     @classmethod
     def update_gps(cls, GPSdict):
@@ -200,12 +200,12 @@ class Ubidots:
                     ubl.close()
                     ubl = navio.ublox.UBlox("spi:0.0", baudrate=5000000, timeout=2)
                     continue
-                print(empty)
+                # print(empty)
 
                 break
 
             if msg.name() == "NAV_POSLLH":
-                print("NAV_POSLLH")
+                # print("NAV_POSLLH")
                 outstr = str(msg).split(",")[1:]
         #            print(outstr)
                 names = list()
@@ -215,19 +215,19 @@ class Ubidots:
                     names.append(new[0][1:])
                     values.append(new[1])
                 GPSdict = dict(zip(names, values))
-                print(GPSdict)
+                # print(GPSdict)
                 self.update_gps(GPSdict)
                 # gQ = dequeue(values)
 
                 # print(outstr)
             if msg.name() == "NAV_STATUS":
-                print("NAV_STATUS")
+                # print("NAV_STATUS")
                 outstr = str(msg).split(",")[1:2]
                 outstr = "".join(outstr)
-                print(outstr)
+                # print(outstr)
             if msg.name() == "NAV_VELNED":
-                print("NAV_VELNED")
-                print(str(msg))
+                # print("NAV_VELNED")
+                # print(str(msg))
                 outstr = str(msg).split(",")[1:]
                 names = list()
                 values = list()
@@ -237,7 +237,7 @@ class Ubidots:
                     values.append(new[1])
                 speedDict = dict(zip(names, values))
                 self.update_speed(speedDict)
-                print(speedDict)
+                # print(speedDict)
 
     def accelThread(self, accelName):
         # AccelGyroMag initialization
@@ -277,7 +277,7 @@ class Ubidots:
 
             baro.calculatePressureAndTemperature()
             self.update_baro(baro.TEMP, baro.PRES)
-            print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
+            # print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
             time.sleep(1)
 
     def GPSConfig(self):
