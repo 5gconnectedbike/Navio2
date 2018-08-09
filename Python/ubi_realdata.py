@@ -56,6 +56,7 @@ class Ubidots:
         bThread.setDaemon(True)
 
         mainThread = threading.Thread(target=self.main)
+        mainThread.setDaemon(True)
         
         bThread.start()
         gThread.start()
