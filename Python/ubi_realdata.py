@@ -128,7 +128,7 @@ class Ubidots:
         return (cls.TEMPERATURE, cls.PRESSURE)
 
     @classmethod
-    def get_speed(self):
+    def get_speed(cls):
         return (cls.GROUND_SPEED, cls.HEADING)
 
     @classmethod
