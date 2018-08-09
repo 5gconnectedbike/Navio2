@@ -32,6 +32,17 @@ class Ubidots:
     # M9M = np.zeros(3)
     
     def __init__(self):
+        
+        self.LATITUDE = 0
+        self.LONGITUDE = 0
+        self.TEMPERATURE = 0
+        self.PRESSURE = 0
+        self.GROUND_SPEED = 0
+        self.HEADING = 0
+        self.M9A = np.zeros(3)
+        self.M9G = np.zeros(3)
+        self.M9M = np.zeros(3)
+
         navio.util.check_apm()
 
         parser = argparse.ArgumentParser()
@@ -77,15 +88,7 @@ class Ubidots:
         # self.VARIABLE_LABEL_6 = "Acceleration"
         # self.VARIABLE_LABEL_7 = "Gyroscope"  
         # self.VARIABLE_LABEL_8 = "Magnetometer"
-        self.LATITUDE = 0
-        self.LONGITUDE = 0
-        self.TEMPERATURE = 0
-        self.PRESSURE = 0
-        self.GROUND_SPEED = 0
-        self.HEADING = 0
-        self.M9A = np.zeros(3)
-        self.M9G = np.zeros(3)
-        self.M9M = np.zeros(3)
+
 
     def update_accel(self, accList, gyrList, magList):
         # global M9A, M9G, M9M
