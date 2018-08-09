@@ -32,7 +32,41 @@ class Ubidots:
     M9M = np.zeros(3)
     
     def __init__(self):
-        self.val = 0
+        navio.util.check_apm()
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument("-i", help = "Sensor selection: -i [sensor name].\
+                                        Sensors names: mpu or lsm.")
+        
+        if (len(sys.argv) == 1):
+            print("Using LSM9DS1 as default accelerometer")
+            parser.print_help()
+        elif len(sys.argv) == 2:
+            print("Enter sensor name: mpu or lsm")
+
+        args = parser.parse_args()
+
+        aQueue = Queue()
+        bQueue = Queue()
+        gQueue = Queue()
+        sQueue = Queue()
+
+        aThread = Process(target=self.accelThread, args=(args.i, ))
+            
+        gThread = Process(target=self.gpsThread)
+        bThread = Process(target=self.baroThread)
+        mainThread = Process(target=self.main)
+        
+        bThread.start()
+        gThread.start()
+        aThread.start()
+        mainThread.start()
+
+        aThread.join()
+        bThread.join()
+        gThread.join()
+        mainThread.join()
+
         # self.TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
         # self.DEVICE_LABEL = "RPi"  # Put your device label here 
         # self.VARIABLE_LABEL_1 = "Temperature"
@@ -282,49 +316,9 @@ class Ubidots:
         ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_CLOCK, 5)
         #ubl.configure_message_rate(navio.ublox.CLASS_NAV, navio.ublox.MSG_NAV_DGPS, 5)
 
-        return ubl
-
-    def main2(self):
-
-    # if __name__ == '__main__':
-        navio.util.check_apm()
-
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-i", help = "Sensor selection: -i [sensor name].\
-                                        Sensors names: mpu or lsm.")
-        
-        if (len(sys.argv) == 1):
-            print("Using LSM9DS1 as default accelerometer")
-            parser.print_help()
-        elif len(sys.argv) == 2:
-            print("Enter sensor name: mpu or lsm")
-
-        args = parser.parse_args()
-
-        aQueue = Queue()
-        bQueue = Queue()
-        gQueue = Queue()
-        sQueue = Queue()
-
-        aThread = Process(target=self.accelThread, args=(args.i, ))
-            
-        gThread = Process(target=self.gpsThread)
-        bThread = Process(target=self.baroThread)
-        mainThread = Process(target=self.main)
-        
-        bThread.start()
-        gThread.start()
-        aThread.start()
-        mainThread.start()
-
-        aThread.join()
-        bThread.join()
-        gThread.join()
-        mainThread.join()
-
-        # main()      
+        return ubl    
 
 if __name__ =='__main__':
-    Ubidots().main2()
+    ubidots = Ubidots()
             
 
