@@ -9,6 +9,7 @@ import random
 import argparse
 import sys
 import numpy as np
+import queue
 
 class Ubidots:
     TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
@@ -47,7 +48,7 @@ class Ubidots:
         args = parser.parse_args()
 
         aQueue = Queue()
-        bQueue = Queue()
+        bQueue = queue.LifoQueue()
         gQueue = Queue()
         sQueue = Queue()
 
