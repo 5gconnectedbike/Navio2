@@ -52,11 +52,11 @@ class Ubidots:
         gQueue = Queue()
         sQueue = Queue()
 
-        aThread = Process(target=self.accelThread, args=(args.i, ))
+        aThread = Process(target=self.accelThread, args=(args.i, aQueue, ))
             
-        gThread = Process(target=self.gpsThread)
+        gThread = Process(target=self.gpsThread, gQueue, sQueue, )
         bThread = Process(target=self.baroThread, args=(bQueue,))
-        mainThread = Process(target=self.main, args=(bQueue,))
+        mainThread = Process(target=self.main, args=(bQueue, aQueue, gQueue, sQueue))
         
         bThread.start()
         gThread.start()
@@ -141,12 +141,27 @@ class Ubidots:
     def get_accel(cls):
         return (cls.M9A, cls.M9G, cls.M9M)
 
-    def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8, bQ):
-        lat, lng = Ubidots.get_gps()
+    def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8, bQ, aQ, gQ, sQ):
+        # lat, lng = Ubidots.get_gps()
         temp_value, pressure_value = bQ.get()
+        speedDict = sQ.get()
+        gpsDict = gQ.get()
+        m9a, m9g, m9m = aQ.get()
+
+        m9a = [round(element,3) for element in m9a]
+        m9g = [round(element,3) for element in m9g]
+        m9m = [round(element,3) for element in m9m]
+        
+        speed = int(speedDict['gSpeed'])
+        heading = int(speedDict['heading'])/100000.0
+
+        lat = int(gpsDict['Latitude'])/10000000.0
+        lng = int(gpsDict['Longitude'])/10000000.0
+
+
         # temp_value, pressure_value = Ubidots.get_baro()
-        speed, heading = Ubidots.get_speed()
-        m9a, m9g, m9m = Ubidots.get_accel()
+        # speed, heading = Ubidots.get_speed()
+        # m9a, m9g, m9m = Ubidots.get_accel()
         # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
 
         payload = {variable_1: temp_value,
@@ -186,20 +201,20 @@ class Ubidots:
 
         return True
 
-    def main(self, bQ):
+    def main(self, bQ, aQ, gQ, sQ):
         while True:
             # time.sleep(3)
 
             payload = self.build_payload(
                 Ubidots.VARIABLE_LABEL_1, Ubidots.VARIABLE_LABEL_2, Ubidots.VARIABLE_LABEL_3, Ubidots.VARIABLE_LABEL_4,
-                Ubidots.VARIABLE_LABEL_5, Ubidots.VARIABLE_LABEL_6, Ubidots.VARIABLE_LABEL_7, Ubidots.VARIABLE_LABEL_8, bQ)
+                Ubidots.VARIABLE_LABEL_5, Ubidots.VARIABLE_LABEL_6, Ubidots.VARIABLE_LABEL_7, Ubidots.VARIABLE_LABEL_8, bQ, aQ, gQ, sQ)
 
             print("[INFO] Attemping to send data")
             self.post_request(payload)
             print(payload)
             print("[INFO] finished")
 
-    def gpsThread(self):
+    def gpsThread(self, gQ, sQ):
         ubl = self.GPSConfig()
     #    time.sleep(1)
 
@@ -229,6 +244,7 @@ class Ubidots:
                 GPSdict = dict(zip(names, values))
                 # print(GPSdict)
                 self.update_gps(GPSdict)
+                gQ.put(GPSdict)
                 # gQ = dequeue(values)
 
                 # print(outstr)
@@ -249,9 +265,10 @@ class Ubidots:
                     values.append(new[1])
                 speedDict = dict(zip(names, values))
                 self.update_speed(speedDict)
+                sQ.put(speedDict)
                 # print(speedDict)
 
-    def accelThread(self, accelName):
+    def accelThread(self, accelName, aQ):
         # AccelGyroMag initialization
         if accelName == 'mpu':
             print("Selected: MPU9250")
@@ -270,7 +287,8 @@ class Ubidots:
         while(True):        
             m9a, m9g, m9m = imu.getMotion9()
             self.update_accel(m9a, m9g, m9m)
-            time.sleep(1)
+            aQ.put((m9a, m9g, m9m))
+            time.sleep(5)
     
     @classmethod
     def baroThread(cls, bQ):
