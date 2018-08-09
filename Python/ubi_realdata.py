@@ -48,7 +48,7 @@ class Ubidots:
         args = parser.parse_args()
 
         aQueue = Queue()
-        bQueue = queue.LifoQueue()
+        bQueue = Queue()
         gQueue = Queue()
         sQueue = Queue()
 
@@ -188,7 +188,7 @@ class Ubidots:
 
     def main(self, bQ):
         while True:
-            time.sleep(3)
+            # time.sleep(3)
 
             payload = self.build_payload(
                 Ubidots.VARIABLE_LABEL_1, Ubidots.VARIABLE_LABEL_2, Ubidots.VARIABLE_LABEL_3, Ubidots.VARIABLE_LABEL_4,
