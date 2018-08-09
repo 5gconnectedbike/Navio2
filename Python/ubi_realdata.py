@@ -109,11 +109,12 @@ class Ubidots:
         cls.LATITUDE = int(GPSdict['Latitude'])/10000000.0
         cls.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
-    def update_baro(self, temperature, pressure):
+    @classmethod
+    def update_baro(cls, temperature, pressure):
         # global TEMPERATURE, PRESSURE
-        Ubidots.TEMPERATURE = temperature
-        Ubidots.PRESSURE = pressure
-        print('UPDATE:  TEMP: {} PRESSURE: {}'.format(Ubidots.TEMPERATURE, Ubidots.PRESSURE))
+        cls.TEMPERATURE = temperature
+        cls.PRESSURE = pressure
+        print('UPDATE:  TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
 
     @classmethod
     def update_speed(cls, speedDict):
@@ -126,9 +127,10 @@ class Ubidots:
         # print('')
         return (cls.LATITUDE, cls.LONGITUDE)
 
-    def get_baro(self):
-        print('GET: TEMP: {} PRESSURE: {}'.format(Ubidots.TEMPERATURE, Ubidots.PRESSURE))
-        return (Ubidots.TEMPERATURE, Ubidots.PRESSURE)
+    @classmethod
+    def get_baro(cls):
+        print('GET: TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
+        return (cls.TEMPERATURE, cls.PRESSURE)
 
     @classmethod
     def get_speed(cls):
@@ -140,7 +142,7 @@ class Ubidots:
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = Ubidots.get_gps()
-        temp_value, pressure_value = self.get_baro()
+        temp_value, pressure_value = Ubidots.get_baro()
         speed, heading = Ubidots.get_speed()
         m9a, m9g, m9m = Ubidots.get_accel()
         # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
@@ -284,7 +286,7 @@ class Ubidots:
             baro.readTemperature()
 
             baro.calculatePressureAndTemperature()
-            self.update_baro(baro.TEMP, baro.PRES)
+            Ubidots.update_baro(baro.TEMP, baro.PRES)
             # print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
             time.sleep(1)
 
