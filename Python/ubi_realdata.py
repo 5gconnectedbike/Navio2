@@ -119,17 +119,21 @@ class Ubidots:
         cls.GROUND_SPEED = int(speedDict['gSpeed'])
         cls.HEADING = int(speedDict['heading'])/100000.0
 
-    def get_gps(self):
-        return (Ubidots.LATITUDE, Ubidots.LONGITUDE)
+    @classmethod
+    def get_gps(cls):
+        return (cls.LATITUDE, cls.LONGITUDE)
 
-    def get_baro(self):
-        return (Ubidots.TEMPERATURE, Ubidots.PRESSURE)
+    @classmethod
+    def get_baro(cls):
+        return (cls.TEMPERATURE, cls.PRESSURE)
 
+    @classmethod
     def get_speed(self):
-        return (Ubidots.GROUND_SPEED, Ubidots.HEADING)
+        return (cls.GROUND_SPEED, cls.HEADING)
 
-    def get_accel(self):
-        return (Ubidots.M9A, Ubidots.M9G, Ubidots.M9M)
+    @classmethod
+    def get_accel(cls):
+        return (cls.M9A, cls.M9G, cls.M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
