@@ -21,15 +21,15 @@ class Ubidots:
     VARIABLE_LABEL_6 = "Acceleration"
     VARIABLE_LABEL_7 = "Gyroscope"  
     VARIABLE_LABEL_8 = "Magnetometer"
-    LATITUDE = 0
-    LONGITUDE = 0
-    TEMPERATURE = 0
-    PRESSURE = 0
-    GROUND_SPEED = 0
-    HEADING = 0
-    M9A = np.zeros(3)
-    M9G = np.zeros(3)
-    M9M = np.zeros(3)
+    # LATITUDE = 0
+    # LONGITUDE = 0
+    # TEMPERATURE = 0
+    # PRESSURE = 0
+    # GROUND_SPEED = 0
+    # HEADING = 0
+    # M9A = np.zeros(3)
+    # M9G = np.zeros(3)
+    # M9M = np.zeros(3)
     
     def __init__(self):
         navio.util.check_apm()
@@ -77,67 +77,55 @@ class Ubidots:
         # self.VARIABLE_LABEL_6 = "Acceleration"
         # self.VARIABLE_LABEL_7 = "Gyroscope"  
         # self.VARIABLE_LABEL_8 = "Magnetometer"
-        # self.LATITUDE = 0
-        # self.LONGITUDE = 0
-        # self.TEMPERATURE = 0
-        # self.PRESSURE = 0
-        # self.GROUND_SPEED = 0
-        # self.HEADING = 0
-        # self.M9A = np.zeros(3)
-        # self.M9G = np.zeros(3)
-        # self.M9M = np.zeros(3)
+        self.LATITUDE = 0
+        self.LONGITUDE = 0
+        self.TEMPERATURE = 0
+        self.PRESSURE = 0
+        self.GROUND_SPEED = 0
+        self.HEADING = 0
+        self.M9A = np.zeros(3)
+        self.M9G = np.zeros(3)
+        self.M9M = np.zeros(3)
 
-    @classmethod
-    def update_accel(cls, accList, gyrList, magList):
+    def update_accel(self, accList, gyrList, magList):
         # global M9A, M9G, M9M
         accList = [round(element,3) for element in accList]
         gyrList = [round(element,3) for element in gyrList]
         magList = [round(element,3) for element in magList]
 
-        cls.M9A = accList
-        cls.M9G = gyrList
-        cls.M9M = magList
-        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(cls.M9M[0],cls.M9M[1],cls.M9M[2]))
+        self.M9A = accList
+        self.M9G = gyrList
+        self.M9M = magList
+        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(self.M9M[0],self.M9M[1],self.M9M[2]))
 
-#        print(' '.join(str(x) for x in M9A))
-#        print(' '.join(str(x) for x in M9G))
-        # print(' '.join(str(x) for x in cls.M9M))
-
-    @classmethod
-    def update_gps(cls, GPSdict):
+    def update_gps(self, GPSdict):
         # global LATITUDE, LONGITUDE
-        cls.LATITUDE = int(GPSdict['Latitude'])/10000000.0
-        cls.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
+        self.LATITUDE = int(GPSdict['Latitude'])/10000000.0
+        self.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
-    @classmethod
-    def update_baro(cls, temperature, pressure):
+    def update_baro(self, temperature, pressure):
         # global TEMPERATURE, PRESSURE
-        cls.TEMPERATURE = temperature
-        cls.PRESSURE = pressure
-        print('TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
+        self.TEMPERATURE = temperature
+        self.PRESSURE = pressure
+        print('TEMP: {} PRESSURE: {}'.format(self.TEMPERATURE, self.PRESSURE))
 
-    @classmethod
-    def update_speed(cls, speedDict):
+    def update_speed(self, speedDict):
         # global GROUND_SPEED, HEADING
-        cls.GROUND_SPEED = int(speedDict['gSpeed'])
-        cls.HEADING = int(speedDict['heading'])/100000.0
+        self.GROUND_SPEED = int(speedDict['gSpeed'])
+        self.HEADING = int(speedDict['heading'])/100000.0
 
-    @classmethod
-    def get_gps(cls):
+    def get_gps(self):
         # print('')
-        return (cls.LATITUDE, cls.LONGITUDE)
+        return (self.LATITUDE, self.LONGITUDE)
 
-    @classmethod
-    def get_baro(cls):
-        return (cls.TEMPERATURE, cls.PRESSURE)
+    def get_baro(self):
+        return (self.TEMPERATURE, self.PRESSURE)
 
-    @classmethod
-    def get_speed(cls):
-        return (cls.GROUND_SPEED, cls.HEADING)
+    def get_speed(self):
+        return (self.GROUND_SPEED, self.HEADING)
 
-    @classmethod
-    def get_accel(cls):
-        return (cls.M9A, cls.M9G, cls.M9M)
+    def get_accel(self):
+        return (self.M9A, self.M9G, self.M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
