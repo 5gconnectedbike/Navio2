@@ -132,7 +132,9 @@ class Ubidots:
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
-        temp_value, pressure_value = self.get_baro()
+        temp_value = self.TEMPERATURE
+        pressure_value = self.PRESSURE
+        
         speed, heading = self.get_speed()
         m9a, m9g, m9m = self.get_accel()
         # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
