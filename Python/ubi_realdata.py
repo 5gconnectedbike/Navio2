@@ -109,12 +109,11 @@ class Ubidots:
         cls.LATITUDE = int(GPSdict['Latitude'])/10000000.0
         cls.LONGITUDE = int(GPSdict['Longitude'])/10000000.0
 
-    @classmethod
-    def update_baro(cls, temperature, pressure):
+    def update_baro(self, temperature, pressure):
         # global TEMPERATURE, PRESSURE
-        cls.TEMPERATURE = temperature
-        cls.PRESSURE = pressure
-        print('UPDATE:  TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
+        Ubidots.TEMPERATURE = temperature
+        Ubidots.PRESSURE = pressure
+        print('UPDATE:  TEMP: {} PRESSURE: {}'.format(Ubidots.TEMPERATURE, Ubidots.PRESSURE))
 
     @classmethod
     def update_speed(cls, speedDict):
@@ -127,10 +126,9 @@ class Ubidots:
         # print('')
         return (cls.LATITUDE, cls.LONGITUDE)
 
-    @classmethod
-    def get_baro(cls):
-        print('GET: TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
-        return (cls.TEMPERATURE, cls.PRESSURE)
+    def get_baro(self):
+        print('GET: TEMP: {} PRESSURE: {}'.format(Ubidots.TEMPERATURE, Ubidots.PRESSURE))
+        return (Ubidots.TEMPERATURE, Ubidots.PRESSURE)
 
     @classmethod
     def get_speed(cls):
