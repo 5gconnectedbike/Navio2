@@ -22,18 +22,8 @@ class Ubidots:
     VARIABLE_LABEL_6 = "Acceleration"
     VARIABLE_LABEL_7 = "Gyroscope"  
     VARIABLE_LABEL_8 = "Magnetometer"
-    # LATITUDE = 0
-    # LONGITUDE = 0
-    # TEMPERATURE = 0
-    # PRESSURE = 0
-    # GROUND_SPEED = 0
-    # HEADING = 0
-    # M9A = np.zeros(3)
-    # M9G = np.zeros(3)
-    # M9M = np.zeros(3)
     
     def __init__(self):
-        
         self.LATITUDE = 0
         self.LONGITUDE = 0
         self.TEMPERATURE = 0
@@ -58,15 +48,13 @@ class Ubidots:
 
         args = parser.parse_args()
 
-        aQueue = Queue()
-        bQueue = Queue()
-        gQueue = Queue()
-        sQueue = Queue()
-
         aThread = threading.Thread(target=self.accelThread, args=(args.i, ))
-            
+        aThread.setDaemon(True)
         gThread = threading.Thread(target=self.gpsThread)
+        gThread.setDaemon(True)
         bThread = threading.Thread(target=self.baroThread)
+        bThread.setDaemon(True)
+
         mainThread = threading.Thread(target=self.main)
         
         bThread.start()
@@ -79,18 +67,6 @@ class Ubidots:
         gThread.join()
         mainThread.join()
 
-        # self.TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
-        # self.DEVICE_LABEL = "RPi"  # Put your device label here 
-        # self.VARIABLE_LABEL_1 = "Temperature"
-        # self.VARIABLE_LABEL_2 = "Pressure"
-        # self.VARIABLE_LABEL_3 = "Position"  
-        # self.VARIABLE_LABEL_4 = "Speed"
-        # self.VARIABLE_LABEL_5 = "Heading"
-        # self.VARIABLE_LABEL_6 = "Acceleration"
-        # self.VARIABLE_LABEL_7 = "Gyroscope"  
-        # self.VARIABLE_LABEL_8 = "Magnetometer"
-
-
     def update_accel(self, accList, gyrList, magList):
         # global M9A, M9G, M9M
         accList = [round(element,3) for element in accList]
@@ -100,7 +76,7 @@ class Ubidots:
         self.M9A = accList
         self.M9G = gyrList
         self.M9M = magList
-        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(self.M9M[0],self.M9M[1],self.M9M[2]))
+        # print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(self.M9M[0],self.M9M[1],self.M9M[2]))
 
     def update_gps(self, GPSdict):
         # global LATITUDE, LONGITUDE
@@ -111,7 +87,7 @@ class Ubidots:
         # global TEMPERATURE, PRESSURE
         self.TEMPERATURE = temperature
         self.PRESSURE = pressure
-        print('TEMP: {} PRESSURE: {}'.format(self.TEMPERATURE, self.PRESSURE))
+        # print('TEMP: {} PRESSURE: {}'.format(self.TEMPERATURE, self.PRESSURE))
 
     def update_speed(self, speedDict):
         # global GROUND_SPEED, HEADING
@@ -133,9 +109,7 @@ class Ubidots:
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
         lat, lng = self.get_gps()
-        temp_value = self.TEMPERATURE
-        pressure_value = self.PRESSURE
-        
+        temp_value, pressure_value = self.get_baro()        
         speed, heading = self.get_speed()
         m9a, m9g, m9m = self.get_accel()
         # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
