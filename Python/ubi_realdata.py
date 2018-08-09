@@ -1,4 +1,5 @@
 from multiprocessing import Process, Queue
+import threading
 import navio.util
 import navio.ublox
 import navio.ms5611
@@ -62,11 +63,11 @@ class Ubidots:
         gQueue = Queue()
         sQueue = Queue()
 
-        aThread = Process(target=self.accelThread, args=(args.i, ))
+        aThread = threading.Thread(target=self.accelThread, args=(args.i, ))
             
-        gThread = Process(target=self.gpsThread)
-        bThread = Process(target=self.baroThread)
-        mainThread = Process(target=self.main)
+        gThread = threading.Thread(target=self.gpsThread)
+        bThread = threading.Thread(target=self.baroThread)
+        mainThread = threading.Thread(target=self.main)
         
         bThread.start()
         gThread.start()
