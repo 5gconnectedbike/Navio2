@@ -121,10 +121,12 @@ class Ubidots:
 
     @classmethod
     def get_gps(cls):
+        # print('')
         return (cls.LATITUDE, cls.LONGITUDE)
 
     @classmethod
     def get_baro(cls):
+        print('TEMP: {} PRESSURE: {}'.format(cls.TEMPERATURE, cls.PRESSURE))
         return (cls.TEMPERATURE, cls.PRESSURE)
 
     @classmethod
@@ -133,6 +135,7 @@ class Ubidots:
 
     @classmethod
     def get_accel(cls):
+        print('Accel: {:+7.3f} {:+7.3f} {:+7.3f}'.format(cls.M9M[0],cls.M9M[1],cls.M9M[2]))
         return (cls.M9A, cls.M9G, cls.M9M)
 
     def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
@@ -140,7 +143,7 @@ class Ubidots:
         temp_value, pressure_value = self.get_baro()
         speed, heading = self.get_speed()
         m9a, m9g, m9m = self.get_accel()
-        print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
+        # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
 
         payload = {variable_1: temp_value,
                 variable_2: pressure_value,
