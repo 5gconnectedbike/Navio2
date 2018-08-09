@@ -145,8 +145,8 @@ class Ubidots:
             time.sleep(3)
 
             payload = self.build_payload(
-                self.VARIABLE_LABEL_1, self.VARIABLE_LABEL_2, self.VARIABLE_LABEL_3, self.VARIABLE_LABEL_4,
-                self.VARIABLE_LABEL_5, self.VARIABLE_LABEL_6, self.VARIABLE_LABEL_7, self.VARIABLE_LABEL_8)
+                Ubidots.VARIABLE_LABEL_1, Ubidots.VARIABLE_LABEL_2, Ubidots.VARIABLE_LABEL_3, Ubidots.VARIABLE_LABEL_4,
+                Ubidots.VARIABLE_LABEL_5, Ubidots.VARIABLE_LABEL_6, Ubidots.VARIABLE_LABEL_7, Ubidots.VARIABLE_LABEL_8)
 
             print("[INFO] Attemping to send data")
             self.post_request(payload)
