@@ -54,8 +54,8 @@ class Ubidots:
         aThread = Process(target=self.accelThread, args=(args.i, ))
             
         gThread = Process(target=self.gpsThread)
-        bThread = Process(target=self.baroThread)
-        mainThread = Process(target=self.main)
+        bThread = Process(target=self.baroThread, args=(bQueue,))
+        mainThread = Process(target=self.main, args=(bQueue,))
         
         bThread.start()
         gThread.start()
@@ -140,9 +140,10 @@ class Ubidots:
     def get_accel(cls):
         return (cls.M9A, cls.M9G, cls.M9M)
 
-    def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8):
+    def build_payload(self, variable_1, variable_2, variable_3, variable_4, variable_5, variable_6, variable_7, variable_8, bQ):
         lat, lng = Ubidots.get_gps()
-        temp_value, pressure_value = Ubidots.get_baro()
+        temp_value, pressure_value = bQ.get()
+        # temp_value, pressure_value = Ubidots.get_baro()
         speed, heading = Ubidots.get_speed()
         m9a, m9g, m9m = Ubidots.get_accel()
         # print('lat: {} lng: {} temp_value: {} pressure value: {} m9m:{} {} {}'.format(lat, lng, temp_value, pressure_value, m9m[0], m9m[1], m9m[2]))
@@ -184,13 +185,13 @@ class Ubidots:
 
         return True
 
-    def main(self):
+    def main(self, bQ):
         while True:
             time.sleep(3)
 
             payload = self.build_payload(
                 Ubidots.VARIABLE_LABEL_1, Ubidots.VARIABLE_LABEL_2, Ubidots.VARIABLE_LABEL_3, Ubidots.VARIABLE_LABEL_4,
-                Ubidots.VARIABLE_LABEL_5, Ubidots.VARIABLE_LABEL_6, Ubidots.VARIABLE_LABEL_7, Ubidots.VARIABLE_LABEL_8)
+                Ubidots.VARIABLE_LABEL_5, Ubidots.VARIABLE_LABEL_6, Ubidots.VARIABLE_LABEL_7, Ubidots.VARIABLE_LABEL_8, bQ)
 
             print("[INFO] Attemping to send data")
             self.post_request(payload)
@@ -271,7 +272,7 @@ class Ubidots:
             time.sleep(1)
     
     @classmethod
-    def baroThread(cls):
+    def baroThread(cls, bQ):
         # Barometer initialization
         baro = navio.ms5611.MS5611()
         baro.initialize()
@@ -287,6 +288,7 @@ class Ubidots:
             baro.readTemperature()
 
             baro.calculatePressureAndTemperature()
+            bQ.put((baro.TEMP, baro.PRES))
             cls.update_baro(baro.TEMP, baro.PRES)
             # print('Temp: {:+7.3f} Baro:{:+7.3f}'.format(baro.TEMP, baro.PRES))
             time.sleep(1)
