@@ -10,6 +10,7 @@ import argparse
 import sys
 import numpy as np
 import queue
+import navio.leds
 
 class Ubidots:
     TOKEN = "BBFF-Dpzfrql8SZQI69cGftAlnC09sLyiAf"  # Put your TOKEN here
@@ -203,6 +204,8 @@ class Ubidots:
 
     def main(self, bQ, aQ, gQ, sQ):
         while True:
+            led = navio.leds.Led()
+            led.setColor('Yellow')
             # time.sleep(3)
 
             payload = self.build_payload(
@@ -213,6 +216,7 @@ class Ubidots:
             self.post_request(payload)
             print(payload)
             print("[INFO] finished")
+            led.setColor('Green')
 
     def gpsThread(self, gQ, sQ):
         ubl = self.GPSConfig()
